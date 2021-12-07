@@ -16,7 +16,7 @@ server=${server:-"http://lz4.overpass-api.de"}
 tag1=${tag1:-"waterway=riverbank"}
 tag2=${tag2:-"water=river"}
 color=${color:-"GR"}
-tmpcsv="/tmp/all_country_ids.csv"
+tmpcsv="/tmp/all_country_ids_names.csv"
 throttle=${throttle:-1}
 
 #color output codes
@@ -33,7 +33,7 @@ printf "Comparing ${YELLOW}${tag1}${NC} to ${YELLOW}${tag2}${NC} in each country
 echo "Start processing at $date"
 echo
 
-wget -qO "$tmpcsv" --post-file=queries/all_country_ids.op \
+wget -qO "$tmpcsv" --post-file=queries/all_country_names_ids.op \
   "$server/api/interpreter"
 
 wgetreturn=$?
@@ -51,17 +51,17 @@ echo "------------------------------"
 
 while read p; do
   base_area=3600000000
-  area_id=`expr $base_area + $p`
+  rel_id="$( cut -d ',' -f 1 <<< "$p" )"
+  name="$( cut -d ',' -f 2- <<< "$p" )"
+  area_id=`expr $base_area + $rel_id`
   query=`sed "s/#AREA/$area_id/g; s/#TAG1/$tag1/g; s/#TAG2/$tag2/g" queries/count_tags.op`
   namequery=`sed "s/#ID/$p/g" queries/id_to_name.op`
   while [ -z "$counts" ]; do
     counts=$(wget -qO- --post-data="$query" "$server/api/interpreter")
     sleep "$throttle"
   done
-  while [ -z "$name" ]; do
-    name=$(wget -qO- --post-data="$namequery" "$server/api/interpreter")
-    sleep "$throttle"
-  done
+  # Output format:
+  # <2-letter ISO code>,country_name,tag1_count,tag2_count
   csvoutput="${csvoutput}\n${name},${counts}"
   echo "[$name]: $counts"
   name=
@@ -69,7 +69,7 @@ while read p; do
 
   #echo -e "$csvoutput" > out.csv
 
-done <"$tmpcsv"
+done <"$tmpcsv"  # Load all_country_ids.csv file
 
 csvoutput="${csvoutput}\n"
 

@@ -128,6 +128,6 @@ args = commandArgs(trailingOnly = TRUE)
     }
         
 # Save output figure
-    save_plot(opt$output, plot)
+    save_plot(opt$output, plot, bg = "white")
     
     
