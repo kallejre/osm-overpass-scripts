@@ -9,7 +9,7 @@ fn=f"tags-{date}.csv"
 map_template_name='microstate_template.svg'
 output_filename="out.svg"
 
-def get_color(tag1, tag2, gradient='RYG'):
+def get_color(tag1, tag2, gradient='RWG'):
     # This line produces percentage in range 0.0-1.0
     ratio=min(max(0.0,tag2/(tag1+tag2) if tag1+tag2!=0 else 1.0),1.0)
     # Next part is maping it smoothly to RGB values. Colorsys uses 0-1 values
@@ -49,8 +49,9 @@ def draw_map(input_filename, output_filename):
         f.write(content.replace('// Replace with colours', '\n'.join(output_style)))
 
 if __name__ =="__main__":
+    # CSV files genereted by get_counts.py are located in ...history/
     files=os.listdir(r"C:\Python\history")
     lines=[]
     for fn in files:
-        draw_map(r"C:\Python\history" +"\\" + fn,r"C:\Python\svgs" +"\\" + fn.replace('csv','svg'))
+        draw_map(r"C:\Python\history" +"\\" + fn,r"svgs" +"\\" + fn.replace('csv','svg'))
 
