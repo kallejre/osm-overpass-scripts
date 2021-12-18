@@ -9,6 +9,11 @@
 #
 # pipe: ./csv_compare_tags.sh | ./plot_overPass.R 
 
+# Sample command:
+# cat tags-2021-03-09.csv | ./plot_overPass.R --tag1 "waterway=riverbank" --tag2 "water=river" -o "test-21-03-09.png" -c "GR" --date 2020-01-03
+
+
+
 args = commandArgs(trailingOnly = TRUE)
 
 # Load packages
@@ -41,6 +46,9 @@ args = commandArgs(trailingOnly = TRUE)
                                         metavar = 'character'),
                         make_option(c("-c", "--color", type="character"),
                                         default = "GR", help = 'Color scheme for plot (GR, BR, V, P)',
+                                        metavar = 'character'),
+                        make_option(c("-d", "--date", type="date"),
+                                        default = Sys.Date(), help = 'Date data was captured',
                                         metavar = 'character'))
 
     opt_parser <- OptionParser(option_list = option_list)
@@ -94,7 +102,7 @@ args = commandArgs(trailingOnly = TRUE)
                                          limits = c(0,100)) +
                     labs(title = paste0("Country preference for <span style = 'color:#DCE319FF;'>**", tag1, "**</span>
                               vs. <span style = 'color:#482677FF;'>**", tag2, "**</span>"),
-                         caption = Sys.Date())
+                         caption = opt$date)
     } else if (opt$color == "P") {
         plot <- plot +
                     scale_fill_viridis_c(option = "plasma",
@@ -102,7 +110,7 @@ args = commandArgs(trailingOnly = TRUE)
                                          limits = c(0,100)) +
                     labs(title = paste0("Country preference for <span style = 'color:#F7E225FF;'>**", tag1, "**</span>
                               vs. <span style = 'color:#2D0594FF;'>**", tag2, "**</span>"),
-                         caption = Sys.Date())
+                         caption = opt$date)
     } else if (opt$color == "BR") {
         plot <- plot +
                     scale_fill_gradient2(name = "%",
@@ -113,7 +121,7 @@ args = commandArgs(trailingOnly = TRUE)
                                          limits = c(0,100)) +
                     labs(title = paste0("Country preference for <span style = 'color:red3;'>**", tag1, "**</span>
                               vs. <span style = 'color:dodgerblue3;'>**", tag2, "**</span>"),
-                         caption = Sys.Date())
+                         caption = opt$date)
     } else {
         plot <- plot +
                     scale_fill_gradient2(name = "%",
@@ -124,7 +132,7 @@ args = commandArgs(trailingOnly = TRUE)
                                          limits = c(0,100)) +
                     labs(title = paste0("Country preference for <span style = 'color:red3;'>**", tag1, "**</span>
                               vs. <span style = 'color:darkgreen;'>**", tag2, "**</span>"),
-                         caption = Sys.Date())
+                         caption = opt$date)
     }
         
 # Save output figure
