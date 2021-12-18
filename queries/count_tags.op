@@ -1,8 +1,8 @@
-[out:csv(cnt1,cnt2;false;",")][timeout:3600];
+[out:csv(cnt1,cnt2;false;",")]#DATE[timeout:3600];
 area(id:#AREA);
-nwr[#TAG1](area)->.rb;
-nwr[#TAG2](area)->.rv;
+wr[#TAG1](area)->.t1;
+wr[#TAG2](area)->.t2;
 make stat
-  cnt1=rb.count(ways)+rb.count(relations),
-  cnt2=rv.count(ways)+rv.count(relations);
+  cnt1=t1.count(ways)+t1.count(relations),
+  cnt2=t2.count(ways)+t2.count(relations);
 out;

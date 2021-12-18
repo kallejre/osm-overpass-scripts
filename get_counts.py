@@ -2,15 +2,8 @@ import requests
 import concurrent.futures
 from multiprocessing.pool import ThreadPool
 import time,datetime, csv, random
-op_template='''
-[out:csv(cnt1,cnt2;false;",")]#DATE[timeout:3600];
-area(id:#AREA);
-wr[#TAG1](area)->.t1;
-wr[#TAG2](area)->.t2;
-make stat
-  cnt1=t1.count(ways)+t1.count(relations),
-  cnt2=t2.count(ways)+t2.count(relations);
-out;'''
+with open('queries/count_tags.op') as f:
+    op_template=f.read()
 url='http://127.0.0.1/api/interpreter'
 s=requests.Session()
 def log(*args):
