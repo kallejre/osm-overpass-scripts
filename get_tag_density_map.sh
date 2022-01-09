@@ -20,19 +20,22 @@ countries=${countries:-"no"}
 throttle=${throttle:-1}
 bbox=${bbox:-}
 location=${location:-}
+colmap=${colmap:-"plasma"}
 plotbackend=${plotbackend:-"R"}
 rate=$(curl -s "${server}/api/status" | grep "Rate limit" | cut -f 3 -d ' ')
 
 
 # Set bbox according to the location preset
 case $location in
-    Europe) bbox="34,-13,65,48" ;;
+    Europe) bbox="34,-13,75,48" ;;
     USA) bbox="24,-126,51,-65" ;;
     Africa) bbox="-36,-21,39,55" ;;
     Asia) bbox="-11,25,77,180" ;;
+    Asia2) bbox="-21,75,50,160" ;;
     NAmerica) bbox="9,-168,73,-51" ;;
     SAmerica) bbox="-56,-90,17,-31" ;;
     Australia) bbox="-47,106,8,180" ;;
+    smallWorld) bbox="-25,0,75,150" ;;
 esac
 
 #color output codes
@@ -132,6 +135,7 @@ while [ "$#" -gt 0 ]; do
 
     # Run query
     query=`sed "s/#TAG/$tag/g; s/#BBOX/$b/g" ${0%/*}/queries/find_centers.op`
+    echo "$query"
     out="$(curl -s -m 9000 -d "$query" -X POST "$server/api/interpreter")"
 
     
@@ -172,12 +176,12 @@ done
 
 
 printf 'Query time: %02dh:%02dm:%02ds\n' $(($SECONDS/3600)) $(($SECONDS%3600/60)) $(($SECONDS%60))
-
+echo "Using following bounding box: $bbox"
 if [ ! -z "$map" ]; then
     if [ "$plotbackend" = "py" ]; then
-        ${0%/*}/plot_tagDensity.py -i /tmp/tag_csv.tmp --tag "$tag" -o "$map" --binwidth "$binwidth" --bbox="$bbox" --countries "$countries"
+        ${0%/*}/plot_tagDensity.py -i /tmp/tag_csv.tmp --tag "$tag" -o "$map" --binwidth "$binwidth" --bbox="$bbox" --countries "$countries" --colmap "$colmap"
     else
-        ${0%/*}/plot_tagDensity.R -i /tmp/tag_csv.tmp --tag "$tag" -o "$map" --binwidth "$binwidth" --bbox="$bbox" --countries "$countries"
+        ${0%/*}/plot_tagDensity.R -i /tmp/tag_csv.tmp --tag "$tag" -o "$map" --binwidth "$binwidth" --bbox="$bbox" --countries "$countries" --colmap "$colmap"
     fi
     printf "Saved map: ${YELLOW}${map}${NC}\n"
 fi

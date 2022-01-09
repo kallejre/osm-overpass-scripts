@@ -19,11 +19,11 @@ color=${color:-"GR"}
 tmpcsv="/tmp/all_country_ids_names.csv"
 throttle=${throttle:-1}
 # Get overpass data as of given date
-date=${date:-""}
-if [ ! -z "$date" ]  # If date is defined, then convert it to Overpass-compatible timestamp
+asof=${asof:-""}
+if [ ! -z "$asof" ]  # If asof is defined, then convert it to Overpass-compatible timestamp
 then
-  ql_date="[date:\"$(date -d "$date" +"%FT%H:00:00Z")\"]"
-  #date="-$date"  # Add prefix to date, it can be used for csv output name
+  ql_date="[date:\"$(date -d "$asof" +"%FT%H:00:00Z")\"]"
+  #asof="-$asof"  # Add prefix to asof, it will be used for csv output name
   echo "Showing data as of $ql_date"
 else
   ql_date=""
@@ -66,6 +66,7 @@ while read p; do
   area_id=`expr $base_area + $rel_id`
   query=`sed "s/#AREA/$area_id/g; s/#TAG1/$tag1/g; s/#TAG2/$tag2/g; s/#DATE/$ql_date/g" queries/count_tags.op`
   namequery=`sed "s/#ID/$p/g" queries/id_to_name.op`
+  # echo "Running $query"
   while [ -z "$counts" ]; do
     counts=$(wget -qO- --post-data="$query" "$server/api/interpreter")
     sleep "$throttle"

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # R-script to process and plot tag usage data world-wide
 # usage: ./plot_tagDensity.py [-i input.csv] [-o output.png|.jpg|.pdf] [--tag tag_name] [-w <num>] [-b <lat,lon,lat,lon>] [-c <yes|no>]
 #        -i|--input          - input file in csv format with header and two columns containing lat, lon coordinates [default or -: stdin]
@@ -9,7 +9,7 @@
 #        -c|--countries      - plot countries' borders [yes|no] (default: no)
 # binning idea from: https://stackoverflow.com/questions/11507575/basemap-and-density-plots
 
-
+print('Python script was started')
 import datetime
 import sys
 import csv
@@ -20,6 +20,16 @@ import geopandas as gpd
 from matplotlib import rc
 from datetime import date
 
+# SOurce of this list: https://matplotlib.org/stable/gallery/color/colormap_reference.html
+cmap_names = ['cividis', 'inferno', 'magma', 'plasma', 'viridis', 'Blues', 'BuGn', 'BuPu', 'GnBu', 
+        'Greens', 'Greys', 'OrRd', 'Oranges', 'PuBu', 'PuBuGn', 'PuRd', 'Purples', 'RdPu', 'Reds',
+        'YlGn', 'YlGnBu', 'YlOrBr', 'YlOrRd', 'Wistia', 'afmhot', 'autumn', 'binary', 'bone', 'cool', 
+        'copper', 'gist_gray', 'gist_heat', 'gist_yarg', 'gray', 'hot', 'pink', 'spring', 'summer', 
+        'winter', 'BrBG', 'PRGn', 'PiYG', 'PuOr', 'RdBu', 'RdGy', 'RdYlBu', 'RdYlGn', 'Spectral', 
+        'bwr', 'coolwarm', 'seismic', 'hsv', 'twilight', 'twilight_shifted', 'Accent', 'Dark2', 
+        'Paired', 'Pastel1', 'Pastel2', 'Set1', 'Set2', 'Set3', 'tab10', 'tab20', 'tab20b', 'tab20c',
+        'CMRmap', 'brg', 'cubehelix', 'flag', 'gist_earth', 'gist_ncar', 'gist_rainbow', 'gist_stern',
+        'gnuplot', 'gnuplot2', 'jet', 'nipy_spectral', 'ocean', 'prism', 'rainbow', 'terrain', 'turbo']
 
 parser = argparse.ArgumentParser(description='Script for creating files contating names of reads that bear given number of mutations')
 parser.add_argument('-i', '--input', type=str,
@@ -39,11 +49,19 @@ parser.add_argument('-b', '--bbox', type=str,
 parser.add_argument('-c', '--countries', type=str, choices=['yes', 'no'],
                     help='whether to plot borders (default: no)',
                     default='no')
+parser.add_argument('-C', '--colmap', type=str, choices=cmap_names,
+                    help='Name of the pyplot color map used for heatmap',
+                    default='plasma')  # I liked rainbow.
 
 
 args = parser.parse_args()
 bbox = args.bbox.split(",")
-bbox = [float(x) for x in bbox]
+print("BBOX:", bbox)
+# input()
+if bbox != [""]:
+    bbox = [float(x) for x in bbox]
+else:
+    bbox = [-90,-180,90,180]
 
 
 if args.input == '-':
@@ -77,7 +95,7 @@ ax.set_facecolor('black')
 ax.axis([bbox[1], bbox[3], bbox[0], bbox[2]])
 ax.set_title(args.tag, fontsize=15)
 
-plt.pcolormesh(lon_bins_2d, lat_bins_2d, np.log10(density), cmap='plasma', zorder=1)
+plt.pcolormesh(lon_bins_2d, lat_bins_2d, np.log10(density), cmap=args.colmap, zorder=1)
 world.boundary.plot(ax=ax, edgecolor='grey', linewidth=0.25, zorder=2)
 
 plt.colorbar(label=r'$log_{10}$', fraction=0.04, aspect=6)

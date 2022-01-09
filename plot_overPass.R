@@ -17,7 +17,7 @@
 args = commandArgs(trailingOnly = TRUE)
 
 # Load packages
-    packages = c("tidyverse", "ggspatial", "sf", "rnaturalearth", 
+    packages = c("tidyverse", "ggspatial", "sf", "rnaturalearth", "rnaturalearthhires", 
                  "rnaturalearthdata", "rgeos", "cowplot", "optparse", "ggtext")
 
     pack_check <- lapply(packages,
@@ -57,7 +57,7 @@ args = commandArgs(trailingOnly = TRUE)
 
 # Get data about countries
     world <- ne_countries(scale = "medium", returnclass = "sf")
-
+    #ru_sub <- ne_states(returnclass = "sf")
 # Load overpass data
     if (opt$input == "-" || is.null(opt$input)) {
         overpass <- read_csv(file("stdin"), na = "")
@@ -89,12 +89,14 @@ args = commandArgs(trailingOnly = TRUE)
                 left_join(overpass, by = c("iso_a2" = "iso_a2")) %>%
                 ggplot() +
                     geom_sf(aes(fill = percent),  color = "black", size = 0.1) +
+                    #geom_sf(mapping=aes(),data = ru_sub,  color = "black", size = 0.1) +
                     coord_sf(expand = FALSE, ylim = c(-55, 90)) +
                     scale_y_continuous(breaks = c(-50, 0 , 50)) +
                     theme_minimal() +
                     theme( plot.title.position = "plot",
                            plot.title = element_markdown(size = 11))
-    
+                 
+                  
     if (opt$color == "V"){
         plot <- plot +
                     scale_fill_viridis_c(option = "viridis",

@@ -46,6 +46,9 @@ args = commandArgs(trailingOnly = TRUE)
                                         metavar = 'character'),
                         make_option(c("-c", "--countries", type="character"),
                                         default = "no", help = 'whether to plot borders [yes, no] (default: no)',
+                                        metavar = 'character'),
+                        make_option(c("-C", "--colmap", type="character"),
+                                        default = "plasma", help = 'Name of the color map used for heatmap',
                                         metavar = 'character'))
 
     opt_parser <- OptionParser(option_list = option_list)
@@ -84,7 +87,7 @@ args = commandArgs(trailingOnly = TRUE)
                                    fill = after_stat(log10(count))), 
                                binwidth = opt$binwidth) +
                     scale_fill_viridis_c(name = paste0("<span style = 'font-size:8pt'>log<sub>10</sub></span>"),
-                                         option = "plasma") +
+                                         option = opt$colmap) +
                     geom_sf(color = "grey70", size = 0.1, fill = "transparent") +
                     theme_bw() +
                     labs(title = paste0("**", opt$tag, "**"),
