@@ -2,9 +2,15 @@ import requests
 import concurrent.futures
 from multiprocessing.pool import ThreadPool
 import time,datetime, csv, random
+def get_defaults():
+    with open('defaults.sh') as f:
+        config=list(map(lambda x: tuple(x.split('=', 1)),filter(lambda x:'=' in x,f.readlines())))
+    return dict(config)
+defaults=get_defaults()
+
 with open('queries/count_tags.op') as f:
     op_template=f.read()
-url='http://127.0.0.1/api/interpreter'
+url=defaults['DEFAULT_SERVER']+'/api/interpreter'
 s=requests.Session()
 def log(*args):
     msg=f"{datetime.datetime.now().time().isoformat()[:8]} "+' '.join(list(map(str, args)))
@@ -58,7 +64,7 @@ def run_single_request(data_row,t1,t2,filename,date=None):
         writer=csv.writer(f)
         writer.writerow(data_row[1:]+txt)
 def prepare_inputs(tag1, tag2, datafile, date_start, date_end, date_step, fname_template):
-    """Given tags and date range, generte requests to be processed.
+    """Given tags and date range, generate requests to be processed.
 
     Parameters:
     datafile (str): Name of a file that contains output of all_country_names_ids
@@ -123,7 +129,8 @@ def perform_web_requests(inputs_generator, pool_size):
     pool.close()
     pool.join()
 log("Process started")
-inputs=prepare_inputs_2('waterway=riverbank', 'water=river',
+inputs=prepare_inputs_2(defaults['DEFAULT_TAG1'],
+               defaults['DEFAULT_TAG2'],
                'sample list of countries.txt',
                datetime.datetime(2020,12,1),
                datetime.datetime(2021,12,16),

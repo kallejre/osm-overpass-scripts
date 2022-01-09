@@ -11,16 +11,16 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-#defaults
-#server=${server:-"http://lz4.overpass-api.de"}
-server=${server:-"https://overpass.kumi.systems"}
-tag=${tag:-"waterway=riverbank"}
-binwidth=${binwidth:-1}
+
+source defaults.sh
+server=${server:-"$DEFAULT_SERVER"}
+tag=${tag1:-"$DEFAULT_TAG1"}
+binwidth=${binwidth:-$DEFAULT_BINWIDTH}
 countries=${countries:-"no"}
 throttle=${throttle:-1}
 bbox=${bbox:-}
 location=${location:-}
-colmap=${colmap:-"plasma"}
+colmap=${colmap:-"$DEFAULT_COLOR"}
 plotbackend=${plotbackend:-"R"}
 rate=$(curl -s "${server}/api/status" | grep "Rate limit" | cut -f 3 -d ' ')
 

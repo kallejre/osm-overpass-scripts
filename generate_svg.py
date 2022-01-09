@@ -36,8 +36,8 @@ def draw_map(input_filename, output_filename):
     with open(input_filename, encoding='utf8') as f:
         for l in csv.reader(f):
             try:
-                iso,name,rb,wr=l
-                color=get_color(int(rb), int(wr))
+                iso,name,t1,t2=l
+                color=get_color(int(t1), int(t2))
                 #if 'fr' in iso.lower():print(input_filename[-14:],l, color)
                 output_style.append(style_template.format(iso.lower(),color))
             except ValueError:

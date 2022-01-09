@@ -11,11 +11,11 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-#defaults
-server=${server:-"http://lz4.overpass-api.de"}
-tag1=${tag1:-"waterway=riverbank"}
-tag2=${tag2:-"water=river"}
-color=${color:-"GR"}
+source defaults.sh
+server=${server:-"$DEFAULT_SERVER"}
+tag1=${tag1:-"$DEFAULT_TAG1"}
+tag2=${tag2:-"$DEFAULT_TAG2"}
+color=${color:-"$DEFAULT_COLOR"}
 tmpcsv="/tmp/all_country_ids_names.csv"
 throttle=${throttle:-1}
 # Get overpass data as of given date

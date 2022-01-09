@@ -12,7 +12,9 @@ while [ $# -gt 0 ]; do
 done
 
 #defaults
-tag1=${tag1:-"waterway=riverbank"}
+source defaults.sh
+tag1=${tag1:-"$DEFAULT_TAG1"}
+tag1=${tag2:-"$DEFAULT_TAG2"}
 
 
 #color output codes

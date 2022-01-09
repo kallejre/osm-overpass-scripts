@@ -9,27 +9,19 @@ import json
 import time
 import csv
 
+def get_defaults():
+    with open('defaults.sh') as f:
+        config=list(map(lambda x: tuple(x.split('=', 1)),filter(lambda x:'=' in x,f.readlines())))
+    return dict(config)
+defaults=get_defaults()
+
 parser = argparse.ArgumentParser(description='Script for getting per-country tag counts via taginfo. Quicker alternative to compare_tags_by_country.sh')
-"""
-#defaults
-server=${server:-"http://lz4.overpass-api.de"}
-tag1=${tag1:-"waterway=riverbank"}
-tag2=${tag2:-"water=river"}
-color=${color:-"GR"}
-tmpcsv="/tmp/all_country_ids.csv"
-throttle=${throttle:-1}
 
-#color output codes
-YELLOW='\033[1;33m'
-NC='\033[0m'
-"""
-
-parser.add_argument('--server', type=str, help='Does nothing')
 parser.add_argument('-o', '--output', type=str,  metavar='FILE',
                     help='Outputfile for plot (.png, ,jpg, .pdf)',
                     default="plot_" + str(datetime.datetime.now()) + ".png")
-parser.add_argument('--tag1', type=str, help='tag name', default="waterway=riverbank")
-parser.add_argument('--tag2', type=str, help='tag name', default="water=river")
+parser.add_argument('--tag1', type=str, help='tag name', default=defaults["DEFAULT_TAG1"])
+parser.add_argument('--tag2', type=str, help='tag name', default=defaults["DEFAULT_TAG2"])
 parser.add_argument('--level', type=int, help='Admin level (0..4)', default="2")
 parser.add_argument('--color', type=str, help='Map color scale', default="GR")
 parser.add_argument('--csv', type=str,  metavar='FILE', required=False, default=None)
