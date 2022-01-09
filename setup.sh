@@ -1,6 +1,8 @@
 #!/bin/bash
 # Install R with required dependencies, tested on Ubuntu 20.04 VM.
 echo "This script will NOT work on WSL systems."
+sudo apt update
+sudo apt upgrade -y
 sudo apt install open-vm-tools open-vm-tools-desktop -y
 sudo apt install dirmngr gnupg git curl apt-transport-https libudunits2-dev libfontconfig1-dev libicu66 libcairo2-dev ca-certificates python3-pip software-properties-common software-properties-common dirmngr -y
 
