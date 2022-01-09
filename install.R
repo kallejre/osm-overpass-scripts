@@ -13,3 +13,4 @@
                                                 }
                                               }
                         )
+    devtools::install_github("ropensci/rnaturalearthhires")

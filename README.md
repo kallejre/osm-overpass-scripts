@@ -89,33 +89,34 @@ For python:
      pip install geopandas
 
 ### ...or just run following commands
-This script is based on guide shown above and it was tested on fresh install of Ubuntu 20.04 (with username `user`) on 6th of Dec 2021.
+This script is based on guide shown above and it was tested on fresh install of Ubuntu 20.04 
+virtual machine (with username `user`) on 9th of Jan 2022. This installation **will NOT** 
+work on WSL.
 ```bash
-# Installing R
-sudo apt update && sudo apt upgrade -y
-# Install all dependencies for R, git and this repo.
-sudo apt install dirmngr gnupg git apt-transport-https curl libgdal-dev libcurl4-openssl-dev libudunits2-dev libxml2-dev libssl-dev libfontconfig1-dev libicu66 libcairo2-dev ca-certificates python3-pip software-properties-common software-properties-common dirmngr -y
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-sudo add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
-sudo add-apt-repository ppa:c2d4u.team/c2d4u4.0+ -y
-sudo apt install r-base build-essential -y
-
-cd ~
-git clone https://github.com/ZeLonewolf/osm-overpass-scripts.git
-cd osm-overpass-scripts/
-sudo ./install.R  # Running this command takes around 20-40 min
-pip install numpy matplotlib geopandas
+# Install wget
+sudo apt install curl -y
+curl -o ~/setup.sh https://raw.githubusercontent.com/ZeLonewolf/osm-overpass-scripts/main/setup.sh
+chmod u+x ~/setup.sh
+# Run installation script
+~/setup.sh
 ```
 Basic sample commands to test if setup is working properly.
-```
-./get_tag_density_map.sh --tag waterway=riverbank --binwidth 0.25 --csv test.csv --map test.png --server http://lz4.overpass-api.de
 
+```bash
+./get_tag_density_map.sh --tag waterway=riverbank --binwidth 0.25 --csv test.csv --map test.png --server http://lz4.overpass-api.de
+```
+
+```bash
 # Missing background
 ./compare_tags_by_country.sh  --tag1 waterway=riverbank --tag2 water=river --map test2.png --server http://lz4.overpass-api.de --csv tag_compare.csv
+```
 
+```bash
 # Third
 ./view_tag_history.sh  --tag1 waterway=riverbank --tag2 water=river --plot test3.png --binwidth year --csv yes
+```
 
+```bash
 ./taginfo_compare_tags.sh  --tag1 waterway=riverbank --tag2 water=river --map test2.png --server http://lz4.overpass-api.de --csv tag_compare.csv
 ```
 *Note:* If tag you want to show features non-alphanumeric characters (`:`), you need to use escaped qoutes around key and/or value. Example `--tag1 \"turn:lanes\"=\"|||left\".
