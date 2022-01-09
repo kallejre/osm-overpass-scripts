@@ -100,26 +100,33 @@ chmod u+x ~/setup.sh
 # Run installation script
 ~/setup.sh
 ```
-Basic sample commands to test if setup is working properly.
 
+For testing installation, fastest way to try out `taginfo_compare_tags.sh` - uses taginfo instead of overpass to download basic tag stats quicker.
 ```bash
-./get_tag_density_map.sh --tag waterway=riverbank --binwidth 0.25 --csv test.csv --map test.png --server http://lz4.overpass-api.de
+./taginfo_compare_tags.sh  --tag1 waterway=riverbank --tag2 water=river --map test.png --server http://lz4.overpass-api.de --csv tag_compare.csv
 ```
 
+Probably the most commonly used command sample. Since it uses Overpass API, it also supports parameter `--asof` which accepts any date string supported by unix date tool.
 ```bash
-# Missing background
-./compare_tags_by_country.sh  --tag1 waterway=riverbank --tag2 water=river --map test2.png --server http://lz4.overpass-api.de --csv tag_compare.csv
+./compare_tags_by_country.sh  --tag1 waterway=riverbank --tag2 water=river --map test.png --server http://lz4.overpass-api.de --csv tag_compare.csv
+./compare_tags_by_country.sh  --tag1 waterway=riverbank --tag2 water=river --map test.png --server http://lz4.overpass-api.de --csv tag_compare.csv --asof "4 years ago"
 ```
 
+Second most common script in this repo, used for creating [heatmaps](img/testdens2.png "example") (or histogram, if you prefer). Following examples demonstrate various options of passing arguments.
 ```bash
-# Third
-./view_tag_history.sh  --tag1 waterway=riverbank --tag2 water=river --plot test3.png --binwidth year --csv yes
+./get_tag_density_map.sh --server http://lz4.overpass-api.de --tag waterway=riverbank --map test.png
+./get_tag_density_map.sh --server http://lz4.overpass-api.de --tag waterway=riverbank --map test.png --binwidth 1.0
+./get_tag_density_map.sh --server http://lz4.overpass-api.de --tag waterway=riverbank --map test.png --binwidth 0.3 --csv test.csv --location Europe
+./get_tag_density_map.sh --server http://lz4.overpass-api.de --tag waterway=riverbank --map test.png --binwidth 0.3 --csv test.csv --location Asia
+./get_tag_density_map.sh --server http://lz4.overpass-api.de --tag waterway=riverbank --map test.png --binwidth 0.2 --csv test.csv --location Europe --colmap plasma --plotbackend R
+./get_tag_density_map.sh --server http://lz4.overpass-api.de --tag waterway=riverbank --map test.png --binwidth 0.3 --csv test.csv --location Asia2 --colmap rainbow --plotbackend py
 ```
 
+Relatively simple tool for providing bar diagram for usages of two tags.
 ```bash
-./taginfo_compare_tags.sh  --tag1 waterway=riverbank --tag2 water=river --map test2.png --server http://lz4.overpass-api.de --csv tag_compare.csv
+./view_tag_history.sh  --tag1 waterway=riverbank --tag2 water=river --plot test.png --binwidth year --csv yes
 ```
-*Note:* If tag you want to show features non-alphanumeric characters (`:`), you need to use escaped qoutes around key and/or value. Example `--tag1 \"turn:lanes\"=\"|||left\".
+*Note:* If tag you want to show features non-alphanumeric characters (`:`), you need to use escaped qoutes around key and/or value. Example `--tag1 \"turn:lanes\"=\"|||left\"`.
 
 ## Taginfo version
 Usually you don't need newest country tag statistics for latest minute, but you would satisfy also with day or two old information. For such purpose this repo features `taginfo_compare_tags` scripts, which will use taginfo pages to get precompiled tag counts faster than any overpass could offer. Two scripts rely heavily on [[OSM_regions.json]] datafile, which namely contains information on *(almost)* all the Geofabrik's taginfo servers in structured manner. List has been compiled automatically, but information for some subregions and additional information were added manually. 
